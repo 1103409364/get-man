@@ -1,10 +1,22 @@
 import { reactive, watch } from 'vue'
-import { v4 as uuidv4 } from 'uuid'
 import db from './db.js'
 
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']
 const BODY_TYPES = ['json', 'form-data', 'x-www-form-urlencoded', 'raw', 'binary']
 const MAX_HISTORY = 100
+
+function getSystemTheme() {
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+  return 'dark'
+}
+
+function getInitialTheme() {
+  const saved = localStorage.getItem('theme')
+  if (saved) return saved
+  return 'system'
+}
 
 const state = reactive({
   currentRequest: {
@@ -25,7 +37,8 @@ const state = reactive({
   environments: [],
   activeEnvironment: null,
   sidebarTab: 'collections',
-  theme: localStorage.getItem('theme') || 'dark',
+  theme: getInitialTheme(),
+  systemTheme: getSystemTheme()
 
 })
 
@@ -228,14 +241,38 @@ function substituteVariables(text) {
   return result
 }
 
+function getEffectiveTheme() {
+  if (state.theme === 'system') {
+    return state.systemTheme
+  }
+  return state.theme
+}
+
 watch(() => state.theme, (newTheme) => {
   localStorage.setItem('theme', newTheme)
-  document.documentElement.setAttribute('data-theme', newTheme)
+  document.documentElement.setAttribute('data-theme', getEffectiveTheme())
 }, { immediate: true })
+
+watch(() => state.systemTheme, () => {
+  if (state.theme === 'system') {
+    document.documentElement.setAttribute('data-theme', state.systemTheme)
+  }
+})
+
+function initThemeListener() {
+  if (typeof window !== 'undefined' && window.matchMedia) {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e) => {
+      state.systemTheme = e.matches ? 'dark' : 'light'
+    }
+    mediaQuery.addEventListener('change', handler)
+  }
+}
 
 
 
 async function initStore() {
+  initThemeListener()
   await Promise.all([
     loadCollections(),
     loadHistory(),
