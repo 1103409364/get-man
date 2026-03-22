@@ -1,4 +1,4 @@
-# GetMan
+# Getman
 
 一个类似 Postman 的 HTTP 客户端应用，基于 Tauri 构建桌面客户端，无需配置代理即可解决跨域问题。
 

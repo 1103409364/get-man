@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "GetMan",
+  "productName": "Getman",
   "version": "0.1.0",
   "identifier": "com.getman.app",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "GetMan",
+        "title": "Getman",
         "width": 1280,
         "height": 800,
         "minWidth": 800,

@@ -20,7 +20,7 @@
           <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
       </div>
-      <h1 class="app-title">GetMan</h1>
+      <h1 class="app-title">Getman</h1>
     </div>
 
     <div class="header-actions">
