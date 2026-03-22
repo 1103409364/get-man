@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Getman
+Exec=/path/to/getman
+Icon=getman
+Type=Application
+Categories=Development;Network;
+StartupWMClass=Getman
