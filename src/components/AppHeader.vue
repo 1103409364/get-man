@@ -1,6 +1,6 @@
 <template>
-  <header class="app-header">
-    <div class="header-brand">
+  <header class="app-header" data-tauri-drag-region>
+    <div class="header-brand" data-tauri-drag-region>
       <div class="logo">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -13,9 +13,9 @@
       </div>
       <h1 class="app-title">GetMan</h1>
     </div>
-    
+
     <div class="header-actions">
-      <button 
+      <button
         class="btn-theme"
         @click="toggleTheme"
         :title="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
@@ -35,7 +35,7 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       </button>
-      
+
       <div class="env-indicator" v-if="activeEnvironment" :title="'当前环境: ' + activeEnvironment.name">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -44,6 +44,24 @@
         </svg>
         {{ activeEnvironment.name }}
       </div>
+
+      <div class="window-controls">
+        <button class="btn-control btn-minimize" @click="minimizeWindow" title="最小化">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <rect x="2" y="5.5" width="8" height="1" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="btn-control btn-maximize" @click="toggleMaximize" title="最大化">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.2" rx="1"/>
+          </svg>
+        </button>
+        <button class="btn-control btn-close" @click="closeWindow" title="关闭">
+          <svg width="12" height="12" viewBox="0 0 12 12">
+            <path d="M2.5 2.5L9.5 9.5M9.5 2.5L2.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 </template>
@@ -51,12 +69,38 @@
 <script setup>
 import { computed } from 'vue'
 import { state } from '../stores/store.js'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 
+const appWindow = getCurrentWindow()
 const theme = computed(() => state.theme)
 const activeEnvironment = computed(() => state.activeEnvironment)
 
 function toggleTheme() {
   state.theme = state.theme === 'dark' ? 'light' : 'dark'
+}
+
+async function minimizeWindow() {
+  try {
+    await appWindow.minimize()
+  } catch (e) {
+    console.error('minimize error:', e)
+  }
+}
+
+async function toggleMaximize() {
+  try {
+    await appWindow.toggleMaximize()
+  } catch (e) {
+    console.error('toggleMaximize error:', e)
+  }
+}
+
+async function closeWindow() {
+  try {
+    await appWindow.close()
+  } catch (e) {
+    console.error('close error:', e)
+  }
 }
 </script>
 
@@ -66,9 +110,10 @@ function toggleTheme() {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  height: 56px;
+  height: 48px;
   background: var(--color-surface-2);
   border-bottom: 1px solid var(--color-border);
+  user-select: none;
 }
 
 .header-brand {
@@ -81,16 +126,16 @@ function toggleTheme() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  border-radius: 10px;
+  border-radius: 8px;
   color: white;
 }
 
 .app-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   -webkit-background-clip: text;
@@ -101,17 +146,17 @@ function toggleTheme() {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .btn-theme {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: var(--color-surface-3);
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -127,11 +172,47 @@ function toggleTheme() {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background: var(--color-primary-alpha);
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
+  color: var(--color-primary);
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.btn-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-surface-3);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-control:hover {
+  background: var(--color-surface-1);
+  color: var(--color-text);
+}
+
+.btn-close:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-maximize:hover {
+  background: var(--color-primary-alpha);
   color: var(--color-primary);
 }
 </style>

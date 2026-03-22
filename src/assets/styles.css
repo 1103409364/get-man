@@ -69,10 +69,27 @@ html, body {
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+html {
+  border-radius: 12px;
 }
 
 body {
+  border-radius: 12px;
   overflow: hidden;
+}
+
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+
+[data-tauri-drag-region] button,
+[data-tauri-drag-region] input,
+[data-tauri-drag-region] select,
+[data-tauri-drag-region] textarea {
+  -webkit-app-region: no-drag;
 }
 
 #app {
