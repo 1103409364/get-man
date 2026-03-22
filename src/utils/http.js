@@ -1,19 +1,5 @@
-import axios from 'axios'
+import { invoke } from '@tauri-apps/api/core'
 import { state, addHistoryEntry, substituteVariables } from '../stores/store.js'
-
-function getProxiedUrl(url) {
-  if (!state.proxyEnabled || !state.proxyUrl) {
-    return url
-  }
-  
-  try {
-    const targetUrl = new URL(url)
-    const proxyBase = state.proxyUrl.replace(/\/$/, '')
-    return `${proxyBase}/${targetUrl.toString()}`
-  } catch {
-    return url
-  }
-}
 
 function substituteHeadersVariables(headers) {
   return headers.map(h => ({
@@ -25,7 +11,7 @@ function substituteHeadersVariables(headers) {
 
 function substituteBodyVariables(body, bodyType) {
   if (!body) return body
-  
+
   if (bodyType === 'json') {
     try {
       const parsed = JSON.parse(body)
@@ -48,7 +34,7 @@ function substituteBodyVariables(body, bodyType) {
       return substituteVariables(body)
     }
   }
-  
+
   return substituteVariables(body)
 }
 
@@ -65,112 +51,54 @@ async function sendRequest() {
   const startTime = performance.now()
 
   try {
-    const originalUrl = substituteVariables(state.currentRequest.url)
-    const url = getProxiedUrl(originalUrl)
-    const method = state.currentRequest.method.toLowerCase()
+    const url = substituteVariables(state.currentRequest.url)
+    const method = state.currentRequest.method.toUpperCase()
     const headers = substituteHeadersVariables(state.currentRequest.headers || [])
     const bodyType = state.currentRequest.bodyType
     const body = substituteBodyVariables(state.currentRequest.body, bodyType)
 
-    const config = {
-      method,
+    const request = {
       url,
-      headers: headers.reduce((acc, h) => {
-        if (h.key && h.enabled !== false) {
-          acc[h.key] = h.value
-        }
-        return acc
-      }, {}),
-      timeout: 30000,
-      validateStatus: () => true
+      method,
+      headers: headers.filter(h => h.key && h.enabled !== false).map(h => ({
+        key: h.key,
+        value: h.value,
+        enabled: h.enabled !== false
+      })),
+      body: body || null,
+      body_type: bodyType || null
     }
-    
-    if (['post', 'put', 'patch'].includes(method) && body) {
-      if (bodyType === 'json') {
-        config.data = JSON.parse(body)
-        if (!config.headers['Content-Type']) {
-          config.headers['Content-Type'] = 'application/json'
-        }
-      } else if (bodyType === 'x-www-form-urlencoded') {
-        const params = new URLSearchParams()
-        try {
-          const parsed = JSON.parse(body)
-          for (const key in parsed) {
-            params.append(key, parsed[key])
-          }
-        } catch {
-          body.split('&').forEach(pair => {
-            const [key, value] = pair.split('=')
-            if (key) params.append(key, value || '')
-          })
-        }
-        config.data = params
-        if (!config.headers['Content-Type']) {
-          config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        }
-      } else if (bodyType === 'form-data') {
-        const formData = new FormData()
-        try {
-          const parsed = JSON.parse(body)
-          for (const key in parsed) {
-            formData.append(key, parsed[key])
-          }
-        } catch {
-          body.split('&').forEach(pair => {
-            const [key, value] = pair.split('=')
-            if (key) formData.append(key, value || '')
-          })
-        }
-        config.data = formData
-      } else {
-        config.data = body
-      }
-    }
-    
-    const response = await axios(config)
-    const endTime = performance.now()
-    
-    const responseData = response.data
-    let responseBody
-    
-    try {
-      if (typeof responseData === 'object') {
-        responseBody = JSON.stringify(responseData, null, 2)
-      } else {
-        responseBody = String(responseData)
-      }
-    } catch {
-      responseBody = String(responseData)
-    }
-    
+
+    const response = await invoke('send_http_request', { request })
+
     state.response = {
       status: response.status,
-      statusText: response.statusText,
-      headers: Object.entries(response.headers),
-      body: responseBody,
-      time: Math.round(endTime - startTime),
-      size: new Blob([responseBody]).size
+      statusText: response.status_text,
+      headers: response.headers,
+      body: response.body,
+      time: response.time,
+      size: response.size
     }
-    
+
     await addHistoryEntry({
       method: state.currentRequest.method,
       url: state.currentRequest.url,
       status: response.status,
-      time: Math.round(endTime - startTime),
+      time: response.time,
       request: JSON.stringify(state.currentRequest)
     })
-    
+
   } catch (err) {
     const endTime = performance.now()
-    state.error = err.message || '请求失败'
-    
+    state.error = err.message || err || '请求失败'
+
     await addHistoryEntry({
       method: state.currentRequest.method,
       url: state.currentRequest.url,
       status: 0,
       time: Math.round(endTime - startTime),
       request: JSON.stringify(state.currentRequest),
-      error: err.message
+      error: err.message || err
     })
   } finally {
     state.loading = false

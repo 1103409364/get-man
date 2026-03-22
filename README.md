@@ -1,6 +1,6 @@
 # GetMan
 
-一个类似 Postman 的 Web 应用，用于发送和测试 HTTP 请求。所有数据存储在本地浏览器中，无需服务器部署。
+一个类似 Postman 的 HTTP 客户端应用，基于 Tauri 构建桌面客户端，无需配置代理即可解决跨域问题。
 
 ## 功能特性
 
@@ -29,11 +29,6 @@
 - `{{variable_name}}` 语法引用变量
 - 快速切换活动环境
 
-### 代理支持
-- 配置代理服务器解决跨域问题
-- 请求自动通过代理转发
-- 代理状态持久化保存
-
 ### 用户界面
 - 响应式布局，适配桌面和移动端
 - 侧边栏显示集合和历史记录
@@ -42,13 +37,22 @@
 
 ## 技术栈
 
+- **桌面框架**: Tauri 2.0
 - **前端框架**: Vue 3 + Vite
 - **数据存储**: IndexedDB (Dexie)
-- **HTTP 客户端**: Axios
 - **语法高亮**: highlight.js
 - **样式**: CSS Variables + Scoped CSS
 
 ## 快速开始
+
+### 环境要求
+
+- Node.js 18+
+- Rust 1.77+
+- 系统依赖（Linux）：
+  ```bash
+  sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+  ```
 
 ### 安装依赖
 
@@ -59,83 +63,57 @@ npm install
 ### 开发模式
 
 ```bash
-npm run dev
+npm run tauri:dev
 ```
 
 ### 生产构建
 
 ```bash
-npm run build
-npm run preview
+npm run tauri:build
 ```
 
-## 使用代理解决跨域
+构建产物位于 `src-tauri/target/release/bundle/` 目录。
 
-当目标 API 未配置 CORS 时，可以使用代理服务器转发请求：
+## 跨域解决方案
 
-### 1. 启动代理服务器
-
-```bash
-# 使用 cors-anywhere
-npx cors-anywhere
-
-# 或使用自定义代理
-npm install http-proxy-middleware
-```
-
-### 2. 配置代理
-
-1. 点击右下角的盾牌图标打开代理设置
-2. 启用代理开关
-3. 输入代理服务器地址（如 `http://localhost:8080`）
-
-### 请求示例
-
-```
-原始请求：https://api.example.com/users
-代理后：http://localhost:8080/https://api.example.com/users
-```
+本应用基于 Tauri 构建，HTTP 请求通过 Rust 后端发送，完全绕过浏览器的 CORS 限制，无需配置代理服务器即可请求任意 API。
 
 ## 项目结构
 
 ```
 src/
-├── components/          # Vue 组件
-│   ├── AppHeader.vue    # 顶部导航栏
-│   ├── Sidebar.vue      # 侧边栏（集合/历史）
-│   ├── RequestEditor.vue # 请求编辑器
-│   ├── ResponseViewer.vue # 响应查看器
-│   ├── EnvironmentPanel.vue # 环境变量面板
-│   ├── ProxyPanel.vue   # 代理设置面板
-│   └── ...
-├── stores/              # 状态管理
-│   ├── store.js         # 全局状态
-│   └── db.js            # IndexedDB 配置
-├── utils/               # 工具函数
-│   └── http.js          # HTTP 请求处理
-├── assets/              # 静态资源
-│   └── styles.css       # 全局样式
-├── App.vue              # 根组件
-└── main.js              # 入口文件
+├── components/     # Vue 组件
+│   ├── AppHeader.vue       # 顶部导航栏
+│   ├── Sidebar.vue         # 侧边栏（集合/历史）
+│   ├── RequestEditor.vue   # 请求编辑器
+│   ├── ResponseViewer.vue  # 响应查看器
+│   └── EnvironmentPanel.vue # 环境变量面板
+├── stores/         # 状态管理
+│   ├── store.js    # 全局状态
+│   └── db.js       # IndexedDB 配置
+├── utils/          # 工具函数
+│   └── http.js     # HTTP 请求处理
+├── assets/         # 静态资源
+│   └── styles.css  # 全局样式
+├── App.vue         # 根组件
+└── main.js         # 入口文件
+
+src-tauri/          # Tauri 后端
+├── src/
+│   ├── main.rs     # 入口
+│   └── lib.rs      # HTTP 请求处理
+├── Cargo.toml      # Rust 依赖
+└── tauri.conf.json # Tauri 配置
 ```
 
 ## 数据存储
 
-所有数据存储在浏览器的 IndexedDB 中：
+所有数据存储在本地：
 
 - **collections**: 请求集合
 - **requests**: 保存的请求
 - **history**: 请求历史（最多 100 条）
 - **environments**: 环境变量配置
-
-页面刷新后数据自动保留。
-
-## 浏览器支持
-
-- Chrome (最新版)
-- Firefox (最新版)
-- Edge (最新版)
-- Safari (最新版)
 
 ## 许可证
 

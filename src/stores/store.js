@@ -25,8 +25,7 @@ const state = reactive({
   activeEnvironment: null,
   sidebarTab: 'collections',
   theme: localStorage.getItem('theme') || 'dark',
-  proxyEnabled: localStorage.getItem('proxyEnabled') === 'true',
-  proxyUrl: localStorage.getItem('proxyUrl') || ''
+
 })
 
 function createDefaultEnvironment() {
@@ -231,13 +230,7 @@ watch(() => state.theme, (newTheme) => {
   document.documentElement.setAttribute('data-theme', newTheme)
 }, { immediate: true })
 
-watch(() => state.proxyEnabled, (enabled) => {
-  localStorage.setItem('proxyEnabled', String(enabled))
-})
 
-watch(() => state.proxyUrl, (url) => {
-  localStorage.setItem('proxyUrl', url)
-})
 
 async function initStore() {
   await Promise.all([
