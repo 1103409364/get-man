@@ -23,44 +23,40 @@
       <h1 class="app-title">Getman</h1>
     </div>
 
-<div class="header-actions">
-    <button
-      class="btn-theme"
-      @click="cycleTheme"
-      :title="themeTitle"
-    >
-      <svg
-        v-if="effectiveTheme === 'dark'"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <circle cx="12" cy="12" r="5" />
-        <line x1="12" y1="1" x2="12" y2="3" />
-        <line x1="12" y1="21" x2="12" y2="23" />
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-        <line x1="1" y1="12" x2="3" y2="12" />
-        <line x1="21" y1="12" x2="23" y2="12" />
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-      </svg>
-      <svg
-        v-else
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-      </svg>
-      <span v-if="theme === 'system'" class="theme-badge">A</span>
-    </button>
+    <div class="header-actions">
+      <button class="btn-theme" @click="cycleTheme" :title="themeTitle">
+        <svg
+          v-if="effectiveTheme === 'dark'"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg
+          v-else
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <span v-if="theme === 'system'" class="theme-badge">A</span>
+      </button>
 
       <div
         class="env-indicator"
@@ -126,8 +122,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { state } from "../stores/store.js";
+import { computed, onMounted, onUnmounted } from "vue";
+import { state, initThemeListener } from "../stores/store.js";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 const appWindow = getCurrentWindow();
@@ -136,26 +132,26 @@ const systemTheme = computed(() => state.systemTheme);
 const activeEnvironment = computed(() => state.activeEnvironment);
 
 const effectiveTheme = computed(() => {
-  return theme.value === 'system' ? systemTheme.value : theme.value
+  return theme.value === "system" ? systemTheme.value : theme.value;
 });
 
 const themeTitle = computed(() => {
   const labels = {
-    'system': '跟随系统',
-    'dark': '深色模式',
-    'light': '浅色模式'
+    system: "跟随系统",
+    dark: "深色模式",
+    light: "浅色模式",
   };
   const current = labels[theme.value] || theme.value;
   const next = {
-    'system': 'dark',
-    'dark': 'light',
-    'light': 'system'
+    system: "dark",
+    dark: "light",
+    light: "system",
   };
   return `当前: ${current} (点击切换到 ${labels[next[theme.value]]})`;
 });
 
 function cycleTheme() {
-  const order = ['system', 'dark', 'light'];
+  const order = ["system", "dark", "light"];
   const currentIndex = order.indexOf(state.theme);
   state.theme = order[(currentIndex + 1) % order.length];
 }
@@ -183,6 +179,15 @@ async function closeWindow() {
     console.error("close error:", e);
   }
 }
+
+onMounted(() => {
+  window.addEventListener("focus", initThemeListener);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("focus", initThemeListener);
+});
+
 </script>
 
 <style scoped>

@@ -300,10 +300,14 @@ function initThemeListener() {
     const handler = (e) => {
       state.systemTheme = e.matches ? "dark" : "light";
     };
+    handler(mediaQuery);
+    mediaQuery.removeEventListener("change", handler);
     // 可能存在兼容性问题，部分浏览器无法触发 "change" 事件
     mediaQuery.addEventListener("change", handler);
   }
 }
+
+
 
 async function initStore() {
   initThemeListener();
@@ -318,6 +322,7 @@ export {
   createDefaultRequest,
   createDefaultEnvironment,
   initStore,
+  initThemeListener,
   loadCollections,
   loadHistory,
   loadEnvironments,
