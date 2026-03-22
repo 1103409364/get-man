@@ -112,15 +112,17 @@ async function deleteHistoryEntry(id) {
 }
 
 async function createCollection(name, parentId = null) {
-  const siblings = await db.collections.where('parentId').equals(parentId).toArray()
+  const siblings = parentId 
+    ? await db.collections.where('parentId').equals(parentId).toArray()
+    : await db.collections.filter(c => c.parentId === null).toArray()
   const maxOrder = siblings.length > 0 ? Math.max(...siblings.map(s => s.order || 0)) : -1
-  
+
   const id = await db.collections.add({
     name,
     parentId,
     order: maxOrder + 1
   })
-  
+
   await loadCollections()
   return id
 }
@@ -131,17 +133,17 @@ async function updateCollection(id, data) {
 }
 
 async function deleteCollection(id) {
-  const children = await db.collections.where('parentId').equals(id).toArray()
+  const children = await db.collections.filter(c => c.parentId === id).toArray()
   const requests = await db.requests.where('collectionId').equals(id).toArray()
-  
+
   for (const child of children) {
     await deleteCollection(child.id)
   }
-  
+
   for (const request of requests) {
     await db.requests.delete(request.id)
   }
-  
+
   await db.collections.delete(id)
   await loadCollections()
 }

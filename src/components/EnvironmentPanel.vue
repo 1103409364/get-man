@@ -45,7 +45,7 @@
     
     <div v-else class="env-empty">
       <p>选择或创建一个环境</p>
-      <p class="hint">使用 {{variable}} 语法在 URL、头部或请求体中引用变量</p>
+      <p class="hint">使用 &#x7B;&#x7B;variable&#x7D;&#x7D; 语法在 URL、头部或请求体中引用变量</p>
     </div>
     
     <div v-if="showNewEnvDialog" class="dialog-overlay" @click.self="showNewEnvDialog = false">
