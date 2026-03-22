@@ -144,10 +144,11 @@ function copyResponse() {
 }
 
 .response-bar {
+  height: 54px;
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 16px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface-2);
 }
@@ -197,6 +198,7 @@ function copyResponse() {
 }
 
 .tab-btn {
+   height: 30px;
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -229,7 +231,7 @@ function copyResponse() {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -278,7 +280,7 @@ function copyResponse() {
 .response-body {
   flex: 1;
   overflow: auto;
-  padding: 16px;
+  padding: 12px;
 }
 
 .code-block {
@@ -300,10 +302,11 @@ function copyResponse() {
 }
 
 .headers-list {
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: auto;
 }
 
 .header-item {

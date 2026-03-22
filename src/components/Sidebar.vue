@@ -460,7 +460,7 @@ function getStatusClass(status) {
 }
 
 .btn-cancel, .btn-confirm {
-  padding: 8px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: 6px;
   font-size: 13px;

@@ -140,7 +140,7 @@ async function deleteCurrentEnv() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -188,7 +188,7 @@ async function deleteCurrentEnv() {
 }
 
 .env-content {
-  padding: 16px;
+  padding: 12px;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -242,7 +242,7 @@ async function deleteCurrentEnv() {
 }
 
 .btn-save-vars {
-  padding: 10px 16px;
+  padding: 10px 12px;
   border: none;
   border-radius: 6px;
   background: var(--color-primary);
@@ -325,7 +325,7 @@ async function deleteCurrentEnv() {
 }
 
 .btn-cancel, .btn-confirm {
-  padding: 8px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: 6px;
   font-size: 13px;

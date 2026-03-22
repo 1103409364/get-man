@@ -203,7 +203,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: 8px;
   background: var(--color-surface-2);

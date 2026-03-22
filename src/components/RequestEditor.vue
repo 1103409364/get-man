@@ -140,11 +140,12 @@ function sendRequest() {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .request-name-input {
+  height: 30px;
   flex: 1;
   padding: 8px 12px;
   border: 1px solid var(--color-border);
@@ -164,10 +165,11 @@ function sendRequest() {
 }
 
 .btn-send {
+  height: 30px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 20px;
+  padding: 0 20px;
   border: none;
   border-radius: 6px;
   background: var(--color-primary);
@@ -199,7 +201,7 @@ function sendRequest() {
 .url-bar {
   display: flex;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -227,7 +229,7 @@ function sendRequest() {
 .editor-tabs {
   display: flex;
   gap: 4px;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface-2);
 }
@@ -278,7 +280,7 @@ function sendRequest() {
 
 .tab-panel {
   height: 100%;
-  padding: 16px;
+  padding: 12px;
   overflow: auto;
 }
 

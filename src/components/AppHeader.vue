@@ -2,13 +2,22 @@
   <header class="app-header" data-tauri-drag-region>
     <div class="header-brand" data-tauri-drag-region>
       <div class="logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
-          <polyline points="7.5 19.79 7.5 14.6 3 12"/>
-          <polyline points="21 12 16.5 14.6 16.5 19.79"/>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
+            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+          />
+          <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
+          <polyline points="7.5 19.79 7.5 14.6 3 12" />
+          <polyline points="21 12 16.5 14.6 16.5 19.79" />
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+          <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
       </div>
       <h1 class="app-title">GetMan</h1>
@@ -20,45 +29,94 @@
         @click="toggleTheme"
         :title="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
       >
-        <svg v-if="theme === 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        <svg
+          v-if="theme === 'dark'"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
-        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <svg
+          v-else
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       </button>
 
-      <div class="env-indicator" v-if="activeEnvironment" :title="'当前环境: ' + activeEnvironment.name">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="16" x2="12" y2="12"/>
-          <line x1="12" y1="8" x2="12.01" y2="8"/>
+      <div
+        class="env-indicator"
+        v-if="activeEnvironment"
+        :title="'当前环境: ' + activeEnvironment.name"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
         {{ activeEnvironment.name }}
       </div>
 
       <div class="window-controls">
-        <button class="btn-control btn-minimize" @click="minimizeWindow" title="最小化">
+        <button
+          class="btn-control btn-minimize"
+          @click="minimizeWindow"
+          title="最小化"
+        >
           <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect x="2" y="5.5" width="8" height="1" fill="currentColor"/>
+            <rect x="2" y="5.5" width="8" height="1" fill="currentColor" />
           </svg>
         </button>
-        <button class="btn-control btn-maximize" @click="toggleMaximize" title="最大化">
+        <button
+          class="btn-control btn-maximize"
+          @click="toggleMaximize"
+          title="最大化"
+        >
           <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.2" rx="1"/>
+            <rect
+              x="2"
+              y="2"
+              width="8"
+              height="8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+              rx="1"
+            />
           </svg>
         </button>
         <button class="btn-control btn-close" @click="closeWindow" title="关闭">
           <svg width="12" height="12" viewBox="0 0 12 12">
-            <path d="M2.5 2.5L9.5 9.5M9.5 2.5L2.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path
+              d="M2.5 2.5L9.5 9.5M9.5 2.5L2.5 9.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
       </div>
@@ -67,39 +125,39 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { state } from '../stores/store.js'
-import { getCurrentWindow } from '@tauri-apps/api/window'
+import { computed } from "vue";
+import { state } from "../stores/store.js";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
-const appWindow = getCurrentWindow()
-const theme = computed(() => state.theme)
-const activeEnvironment = computed(() => state.activeEnvironment)
+const appWindow = getCurrentWindow();
+const theme = computed(() => state.theme);
+const activeEnvironment = computed(() => state.activeEnvironment);
 
 function toggleTheme() {
-  state.theme = state.theme === 'dark' ? 'light' : 'dark'
+  state.theme = state.theme === "dark" ? "light" : "dark";
 }
 
 async function minimizeWindow() {
   try {
-    await appWindow.minimize()
+    await appWindow.minimize();
   } catch (e) {
-    console.error('minimize error:', e)
+    console.error("minimize error:", e);
   }
 }
 
 async function toggleMaximize() {
   try {
-    await appWindow.toggleMaximize()
+    await appWindow.toggleMaximize();
   } catch (e) {
-    console.error('toggleMaximize error:', e)
+    console.error("toggleMaximize error:", e);
   }
 }
 
 async function closeWindow() {
   try {
-    await appWindow.close()
+    await appWindow.close();
   } catch (e) {
-    console.error('close error:', e)
+    console.error("close error:", e);
   }
 }
 </script>
@@ -109,8 +167,8 @@ async function closeWindow() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  height: 48px;
+  padding: 0 6px;
+  height: 40px;
   background: var(--color-surface-2);
   border-bottom: 1px solid var(--color-border);
   user-select: none;
@@ -119,16 +177,20 @@ async function closeWindow() {
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 
 .logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   border-radius: 8px;
   color: white;
 }
@@ -137,7 +199,11 @@ async function closeWindow() {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -153,8 +219,8 @@ async function closeWindow() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: none;
   border-radius: 6px;
   background: var(--color-surface-3);
@@ -191,8 +257,8 @@ async function closeWindow() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: none;
   border-radius: 6px;
   background: var(--color-surface-3);
