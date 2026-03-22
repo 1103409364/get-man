@@ -6,79 +6,111 @@
       <span class="col-actions"></span>
     </div>
     <div class="editor-rows">
-      <div 
-        v-for="(item, index) in modelValue" 
-        :key="index" 
+      <div
+        v-for="(item, index) in modelValue"
+        :key="index"
         class="editor-row"
         :class="{ disabled: item.enabled === false }"
       >
-        <input 
-          type="text" 
+        <input
+          type="text"
           :value="item.key"
           @input="updateItem(index, 'key', $event.target.value)"
           :placeholder="placeholderKey"
           class="input-key"
         />
-        <input 
-          type="text" 
+        <input
+          type="text"
           :value="item.value"
           @input="updateItem(index, 'value', $event.target.value)"
           :placeholder="placeholderValue"
           class="input-value"
         />
         <div class="row-actions">
-          <button 
+          <button
             class="btn-icon"
             :class="{ active: item.enabled !== false }"
             @click="toggleEnabled(index)"
             :title="item.enabled !== false ? '禁用' : '启用'"
           >
-            <svg v-if="item.enabled !== false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
+            <svg
+              v-if="item.enabled !== false"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
             </svg>
-            <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
+            <svg
+              v-else
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+              />
+              <line x1="1" y1="1" x2="23" y2="23" />
             </svg>
           </button>
-          <button 
+          <button
             class="btn-icon btn-danger"
             @click="removeItem(index)"
             title="删除"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
       </div>
       <div class="editor-row editor-row-new">
-        <input 
-          type="text" 
+        <input
+          type="text"
           v-model="newKey"
           :placeholder="placeholderKey"
           class="input-key"
           @keydown.enter="addItem"
         />
-        <input 
-          type="text" 
+        <input
+          type="text"
           v-model="newValue"
           :placeholder="placeholderValue"
           class="input-value"
           @keydown.enter="addItem"
         />
         <div class="row-actions">
-          <button 
+          <button
             class="btn-icon btn-add"
             @click="addItem"
             :disabled="!newKey"
             title="添加"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </button>
         </div>
@@ -88,50 +120,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
-  placeholderKey: { type: String, default: 'Key' },
-  placeholderValue: { type: String, default: 'Value' }
-})
+  placeholderKey: { type: String, default: "Key" },
+  placeholderValue: { type: String, default: "Value" },
+});
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"]);
 
-const newKey = ref('')
-const newValue = ref('')
+const newKey = ref("");
+const newValue = ref("");
 
 function updateItem(index, field, value) {
-  const updated = [...props.modelValue]
-  updated[index] = { ...updated[index], [field]: value }
-  emit('update:modelValue', updated)
+  const updated = [...props.modelValue];
+  updated[index] = { ...updated[index], [field]: value };
+  emit("update:modelValue", updated);
 }
 
 function removeItem(index) {
-  const updated = props.modelValue.filter((_, i) => i !== index)
-  emit('update:modelValue', updated)
+  const updated = props.modelValue.filter((_, i) => i !== index);
+  emit("update:modelValue", updated);
 }
 
 function toggleEnabled(index) {
-  const updated = [...props.modelValue]
-  updated[index] = { 
-    ...updated[index], 
-    enabled: updated[index].enabled === false ? true : false 
-  }
-  emit('update:modelValue', updated)
+  const updated = [...props.modelValue];
+  updated[index] = {
+    ...updated[index],
+    enabled: updated[index].enabled === false ? true : false,
+  };
+  emit("update:modelValue", updated);
 }
 
 function addItem() {
-  if (!newKey.value) return
-  
-  const updated = [...props.modelValue, { 
-    key: newKey.value, 
-    value: newValue.value,
-    enabled: true 
-  }]
-  emit('update:modelValue', updated)
-  newKey.value = ''
-  newValue.value = ''
+  if (!newKey.value) return;
+
+  const updated = [
+    ...props.modelValue,
+    {
+      key: newKey.value,
+      value: newValue.value,
+      enabled: true,
+    },
+  ];
+  emit("update:modelValue", updated);
+  newKey.value = "";
+  newValue.value = "";
 }
 </script>
 
@@ -181,7 +216,7 @@ input {
   border-radius: 4px;
   padding: 6px 10px;
   font-size: 13px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   color: inherit;
   transition: all 0.2s ease;
 }

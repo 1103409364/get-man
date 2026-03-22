@@ -3,38 +3,68 @@
     <div class="env-header">
       <h3>环境变量</h3>
       <div class="env-actions">
-        <select v-model="selectedEnvId" @change="switchEnvironment" class="env-select">
+        <select
+          v-model="selectedEnvId"
+          @change="switchEnvironment"
+          class="env-select"
+        >
           <option :value="null">不使用环境</option>
-          <option v-for="env in environments" :key="env.id" :value="env.id">{{ env.name }}</option>
+          <option v-for="env in environments" :key="env.id" :value="env.id">
+            {{ env.name }}
+          </option>
         </select>
-        <button class="btn-add" @click="showNewEnvDialog = true" title="新建环境">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
+        <button
+          class="btn-add"
+          @click="showNewEnvDialog = true"
+          title="新建环境"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
         </button>
       </div>
     </div>
-    
+
     <div v-if="activeEnvironment" class="env-content">
       <div class="env-name-edit">
-        <input 
-          type="text" 
+        <input
+          type="text"
           v-model="activeEnvironment.name"
           @blur="updateEnvName"
           @keydown.enter="updateEnvName"
           class="env-name-input"
         />
-        <button class="btn-delete-env" @click="deleteCurrentEnv" title="删除环境">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        <button
+          class="btn-delete-env"
+          @click="deleteCurrentEnv"
+          title="删除环境"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path
+              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+            />
           </svg>
         </button>
       </div>
-      
+
       <div class="variables-editor">
-        <KeyValueEditor 
+        <KeyValueEditor
           v-model="activeEnvironment.variables"
           placeholder-key="变量名"
           placeholder-value="变量值"
@@ -42,16 +72,22 @@
         <button class="btn-save-vars" @click="saveVariables">保存变量</button>
       </div>
     </div>
-    
+
     <div v-else class="env-empty">
       <p>选择或创建一个环境</p>
-      <p class="hint">使用 &#x7B;&#x7B;variable&#x7D;&#x7D; 语法在 URL、头部或请求体中引用变量</p>
+      <p class="hint">
+        使用 &#x7B;&#x7B;variable&#x7D;&#x7D; 语法在 URL、头部或请求体中引用变量
+      </p>
     </div>
-    
-    <div v-if="showNewEnvDialog" class="dialog-overlay" @click.self="showNewEnvDialog = false">
+
+    <div
+      v-if="showNewEnvDialog"
+      class="dialog-overlay"
+      @click.self="showNewEnvDialog = false"
+    >
       <div class="dialog">
         <h3>新建环境</h3>
-        <input 
+        <input
           v-model="newEnvName"
           type="text"
           placeholder="环境名称（如：开发、测试、生产）"
@@ -59,7 +95,9 @@
           autofocus
         />
         <div class="dialog-actions">
-          <button class="btn-cancel" @click="showNewEnvDialog = false">取消</button>
+          <button class="btn-cancel" @click="showNewEnvDialog = false">
+            取消
+          </button>
           <button class="btn-confirm" @click="createNewEnv">创建</button>
         </div>
       </div>
@@ -68,60 +106,64 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { 
-  state, 
-  createEnvironment, 
-  updateEnvironment, 
-  deleteEnvironment, 
+import { ref, computed, watch } from "vue";
+import {
+  state,
+  createEnvironment,
+  updateEnvironment,
+  deleteEnvironment,
   setActiveEnvironment,
-  loadEnvironments 
-} from '../stores/store.js'
-import KeyValueEditor from './KeyValueEditor.vue'
+  loadEnvironments,
+} from "../stores/store.js";
+import KeyValueEditor from "./KeyValueEditor.vue";
 
-const showNewEnvDialog = ref(false)
-const newEnvName = ref('')
-const selectedEnvId = ref(null)
+const showNewEnvDialog = ref(false);
+const newEnvName = ref("");
+const selectedEnvId = ref(null);
 
-const environments = computed(() => state.environments)
-const activeEnvironment = computed(() => state.activeEnvironment)
+const environments = computed(() => state.environments);
+const activeEnvironment = computed(() => state.activeEnvironment);
 
-watch(() => state.activeEnvironment, (env) => {
-  selectedEnvId.value = env?.id || null
-}, { immediate: true })
+watch(
+  () => state.activeEnvironment,
+  (env) => {
+    selectedEnvId.value = env?.id || null;
+  },
+  { immediate: true },
+);
 
 async function createNewEnv() {
-  if (!newEnvName.value) return
-  
-  const id = await createEnvironment(newEnvName.value)
-  await setActiveEnvironment(id)
-  newEnvName.value = ''
-  showNewEnvDialog.value = false
+  if (!newEnvName.value) return;
+
+  const id = await createEnvironment(newEnvName.value);
+  await setActiveEnvironment(id);
+  newEnvName.value = "";
+  showNewEnvDialog.value = false;
 }
 
 async function switchEnvironment() {
-  await setActiveEnvironment(selectedEnvId.value)
+  await setActiveEnvironment(selectedEnvId.value);
 }
 
 async function updateEnvName() {
-  if (!activeEnvironment.value) return
-  await updateEnvironment(activeEnvironment.value.id, { 
-    name: activeEnvironment.value.name 
-  })
+  if (!activeEnvironment.value) return;
+  await updateEnvironment(activeEnvironment.value.id, {
+    name: activeEnvironment.value.name,
+  });
 }
 
 async function saveVariables() {
-  if (!activeEnvironment.value) return
-  await updateEnvironment(activeEnvironment.value.id, { 
-    variables: JSON.stringify(activeEnvironment.value.variables) 
-  })
+  if (!activeEnvironment.value) return;
+  await updateEnvironment(activeEnvironment.value.id, {
+    variables: JSON.stringify(activeEnvironment.value.variables),
+  });
 }
 
 async function deleteCurrentEnv() {
-  if (!activeEnvironment.value) return
-  if (!confirm('确定删除此环境？')) return
-  
-  await deleteEnvironment(activeEnvironment.value.id)
+  if (!activeEnvironment.value) return;
+  if (!confirm("确定删除此环境？")) return;
+
+  await deleteEnvironment(activeEnvironment.value.id);
 }
 </script>
 
@@ -272,7 +314,7 @@ async function deleteCurrentEnv() {
 .env-empty .hint {
   font-size: 12px;
   margin-top: 8px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
 }
 
 .dialog-overlay {
@@ -326,7 +368,8 @@ async function deleteCurrentEnv() {
   justify-content: flex-end;
 }
 
-.btn-cancel, .btn-confirm {
+.btn-cancel,
+.btn-confirm {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;

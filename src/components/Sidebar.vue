@@ -2,56 +2,88 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-tabs">
-        <button 
+        <button
           class="tab-btn"
           :class="{ active: tab === 'collections' }"
           @click="tab = 'collections'"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+            />
           </svg>
           集合
         </button>
-        <button 
+        <button
           class="tab-btn"
           :class="{ active: tab === 'history' }"
           @click="tab = 'history'"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
           </svg>
           历史
         </button>
       </div>
-      <button 
+      <button
         v-if="tab === 'collections'"
         class="btn-add"
         @click="showNewCollectionDialog = true"
         title="新建集合"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
       </button>
-      <button 
+      <button
         v-if="tab === 'history'"
         class="btn-clear"
         @click="clearHistory"
         title="清空历史"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="3 6 5 6 21 6"/>
-          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="3 6 5 6 21 6" />
+          <path
+            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+          />
         </svg>
       </button>
     </div>
-    
+
     <div class="sidebar-content">
       <div v-if="tab === 'collections'" class="collections-list">
-        <CollectionItem 
-          v-for="collection in collections" 
+        <CollectionItem
+          v-for="collection in collections"
           :key="collection.id"
           :collection="collection"
           :depth="0"
@@ -66,27 +98,41 @@
           <p class="hint">点击上方 + 创建新集合</p>
         </div>
       </div>
-      
+
       <div v-if="tab === 'history'" class="history-list">
-        <div 
-          v-for="item in history" 
+        <div
+          v-for="item in history"
           :key="item.id"
           class="history-item"
           @click="loadFromHistory(item)"
         >
-          <div class="history-method" :class="'method-' + item.method.toLowerCase()">{{ item.method }}</div>
+          <div
+            class="history-method"
+            :class="'method-' + item.method.toLowerCase()"
+          >
+            {{ item.method }}
+          </div>
           <div class="history-info">
             <div class="history-url">{{ item.url }}</div>
             <div class="history-meta">
               <span>{{ formatTime(item.timestamp) }}</span>
-              <span v-if="item.status" :class="getStatusClass(item.status)">{{ item.status }}</span>
+              <span v-if="item.status" :class="getStatusClass(item.status)">{{
+                item.status
+              }}</span>
               <span v-else class="status-error">Error</span>
             </div>
           </div>
           <button class="btn-delete" @click.stop="deleteHistory(item.id)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -95,11 +141,15 @@
         </div>
       </div>
     </div>
-    
-    <div v-if="showNewCollectionDialog" class="dialog-overlay" @click.self="showNewCollectionDialog = false">
+
+    <div
+      v-if="showNewCollectionDialog"
+      class="dialog-overlay"
+      @click.self="showNewCollectionDialog = false"
+    >
       <div class="dialog">
         <h3>新建集合</h3>
-        <input 
+        <input
           v-model="newCollectionName"
           type="text"
           placeholder="集合名称"
@@ -107,16 +157,24 @@
           autofocus
         />
         <div class="dialog-actions">
-          <button class="btn-cancel" @click="showNewCollectionDialog = false">取消</button>
-          <button class="btn-confirm" @click="createCollectionItem">创建</button>
+          <button class="btn-cancel" @click="showNewCollectionDialog = false">
+            取消
+          </button>
+          <button class="btn-confirm" @click="createCollectionItem">
+            创建
+          </button>
         </div>
       </div>
     </div>
-    
-    <div v-if="showSaveDialog" class="dialog-overlay" @click.self="showSaveDialog = false">
+
+    <div
+      v-if="showSaveDialog"
+      class="dialog-overlay"
+      @click.self="showSaveDialog = false"
+    >
       <div class="dialog">
         <h3>保存请求</h3>
-        <input 
+        <input
           v-model="saveRequestName"
           type="text"
           placeholder="请求名称"
@@ -124,7 +182,9 @@
           autofocus
         />
         <div class="dialog-actions">
-          <button class="btn-cancel" @click="showSaveDialog = false">取消</button>
+          <button class="btn-cancel" @click="showSaveDialog = false">
+            取消
+          </button>
           <button class="btn-confirm" @click="confirmSaveRequest">保存</button>
         </div>
       </div>
@@ -133,106 +193,115 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { state, createCollection, deleteCollection, updateCollection, saveRequest, deleteHistoryEntry, clearHistory as clearHistoryStore, loadRequestToEditor } from '../stores/store.js'
-import CollectionItem from './CollectionItem.vue'
+import { ref, computed } from "vue";
+import {
+  state,
+  createCollection,
+  deleteCollection,
+  updateCollection,
+  saveRequest,
+  deleteHistoryEntry,
+  clearHistory as clearHistoryStore,
+  loadRequestToEditor,
+} from "../stores/store.js";
+import CollectionItem from "./CollectionItem.vue";
 
-const emit = defineEmits(['load-request'])
+const emit = defineEmits(["load-request"]);
 
-const tab = ref('collections')
-const showNewCollectionDialog = ref(false)
-const newCollectionName = ref('')
-const showSaveDialog = ref(false)
-const saveRequestName = ref('')
-const saveTargetCollectionId = ref(null)
+const tab = ref("collections");
+const showNewCollectionDialog = ref(false);
+const newCollectionName = ref("");
+const showSaveDialog = ref(false);
+const saveRequestName = ref("");
+const saveTargetCollectionId = ref(null);
 
-const collections = computed(() => state.collections)
-const history = computed(() => state.history)
+const collections = computed(() => state.collections);
+const history = computed(() => state.history);
 
 async function createCollectionItem() {
-  if (!newCollectionName.value) return
-  await createCollection(newCollectionName.value)
-  newCollectionName.value = ''
-  showNewCollectionDialog.value = false
+  if (!newCollectionName.value) return;
+  await createCollection(newCollectionName.value);
+  newCollectionName.value = "";
+  showNewCollectionDialog.value = false;
 }
 
 async function deleteCollectionItem(id) {
-  if (confirm('确定删除此集合及其所有内容？')) {
-    await deleteCollection(id)
+  if (confirm("确定删除此集合及其所有内容？")) {
+    await deleteCollection(id);
   }
 }
 
 function editCollection(collection) {
-  const newName = prompt('集合名称', collection.name)
+  const newName = prompt("集合名称", collection.name);
   if (newName && newName !== collection.name) {
-    updateCollection(collection.id, { name: newName })
+    updateCollection(collection.id, { name: newName });
   }
 }
 
 function addSubfolder(parentId) {
-  const name = prompt('子集合名称')
+  const name = prompt("子集合名称");
   if (name) {
-    createCollection(name, parentId)
+    createCollection(name, parentId);
   }
 }
 
 function saveRequestDialog(collectionId) {
-  saveTargetCollectionId.value = collectionId
-  saveRequestName.value = state.currentRequest.name || ''
-  showSaveDialog.value = true
+  saveTargetCollectionId.value = collectionId;
+  saveRequestName.value = state.currentRequest.name || "";
+  showSaveDialog.value = true;
 }
 
 async function confirmSaveRequest() {
-  if (!saveRequestName.value) return
-  
+  if (!saveRequestName.value) return;
+
   const request = {
     ...state.currentRequest,
-    name: saveRequestName.value
-  }
-  
-  await saveRequest(request, saveTargetCollectionId.value)
-  saveRequestName.value = ''
-  showSaveDialog.value = false
+    name: saveRequestName.value,
+  };
+
+  await saveRequest(request, saveTargetCollectionId.value);
+  saveRequestName.value = "";
+  showSaveDialog.value = false;
 }
 
 function selectRequest(request) {
-  loadRequestToEditor(request)
+  loadRequestToEditor(request);
 }
 
 async function loadFromHistory(item) {
   try {
-    const requestData = JSON.parse(item.request)
-    loadRequestToEditor(requestData)
+    const requestData = JSON.parse(item.request);
+    loadRequestToEditor(requestData);
   } catch {
-    console.error('Failed to parse history item')
+    console.error("Failed to parse history item");
   }
 }
 
 async function deleteHistory(id) {
-  await deleteHistoryEntry(id)
+  await deleteHistoryEntry(id);
 }
 
 async function clearHistory() {
-  if (confirm('确定清空所有历史记录？')) {
-    await clearHistoryStore()
+  if (confirm("确定清空所有历史记录？")) {
+    await clearHistoryStore();
   }
 }
 
 function formatTime(timestamp) {
-  const date = new Date(timestamp)
-  const now = new Date()
-  const diff = now - date
-  
-  if (diff < 60000) return '刚刚'
-  if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
-  if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
-  return date.toLocaleDateString()
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+
+  if (diff < 60000) return "刚刚";
+  if (diff < 3600000) return Math.floor(diff / 60000) + "分钟前";
+  if (diff < 86400000) return Math.floor(diff / 3600000) + "小时前";
+  return date.toLocaleDateString();
 }
 
 function getStatusClass(status) {
-  if (status >= 200 && status < 300) return 'status-success'
-  if (status >= 400) return 'status-error'
-  return ''
+  if (status >= 200 && status < 300) return "status-success";
+  if (status >= 400) return "status-error";
+  return "";
 }
 </script>
 
@@ -286,7 +355,8 @@ function getStatusClass(status) {
   color: white;
 }
 
-.btn-add, .btn-clear {
+.btn-add,
+.btn-clear {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,7 +370,8 @@ function getStatusClass(status) {
   transition: all 0.15s ease;
 }
 
-.btn-add:hover, .btn-clear:hover {
+.btn-add:hover,
+.btn-clear:hover {
   background: var(--color-surface-3);
   color: var(--color-text);
 }
@@ -333,7 +404,7 @@ function getStatusClass(status) {
 }
 
 .history-method {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-size: 10px;
   font-weight: 700;
   padding: 2px 6px;
@@ -341,11 +412,26 @@ function getStatusClass(status) {
   text-transform: uppercase;
 }
 
-.method-get { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-.method-post { background: rgba(249, 115, 22, 0.15); color: #f97316; }
-.method-put { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-.method-patch { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
-.method-delete { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.method-get {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.method-post {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+.method-put {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+.method-patch {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+.method-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
 
 .history-info {
   flex: 1;
@@ -367,8 +453,12 @@ function getStatusClass(status) {
   margin-top: 2px;
 }
 
-.status-success { color: #22c55e; }
-.status-error { color: #ef4444; }
+.status-success {
+  color: #22c55e;
+}
+.status-error {
+  color: #ef4444;
+}
 
 .btn-delete {
   display: flex;
@@ -459,7 +549,8 @@ function getStatusClass(status) {
   justify-content: flex-end;
 }
 
-.btn-cancel, .btn-confirm {
+.btn-cancel,
+.btn-confirm {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;

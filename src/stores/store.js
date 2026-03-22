@@ -307,8 +307,6 @@ function initThemeListener() {
   }
 }
 
-
-
 async function initStore() {
   initThemeListener();
   await Promise.all([loadCollections(), loadHistory(), loadEnvironments()]);

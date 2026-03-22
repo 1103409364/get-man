@@ -187,7 +187,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("focus", initThemeListener);
 });
-
 </script>
 
 <style scoped>

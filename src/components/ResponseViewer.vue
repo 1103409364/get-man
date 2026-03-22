@@ -7,24 +7,38 @@
       </div>
       <div class="response-meta">
         <span class="meta-item">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
           </svg>
           {{ response.time }}ms
         </span>
         <span class="meta-item">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
           {{ formatSize(response.size) }}
         </span>
       </div>
       <div class="response-tabs">
-        <button 
-          v-for="tab in tabs" 
+        <button
+          v-for="tab in tabs"
           :key="tab.id"
           class="tab-btn"
           :class="{ active: activeTab === tab.id }"
@@ -34,56 +48,96 @@
         </button>
       </div>
     </div>
-    
-<div class="response-content" v-show="activeTab === 'body'">
-    <div class="response-toolbar">
-      <div class="view-modes">
+
+    <div class="response-content" v-show="activeTab === 'body'">
+      <div class="response-toolbar">
+        <div class="view-modes">
+          <button
+            v-for="mode in viewModes"
+            :key="mode.id"
+            class="mode-btn"
+            :class="{ active: viewMode === mode.id }"
+            @click="viewMode = mode.id"
+          >
+            {{ mode.label }}
+          </button>
+        </div>
+        <button class="btn-copy" @click="copyResponse" title="复制">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        </button>
         <button
-          v-for="mode in viewModes"
-          :key="mode.id"
-          class="mode-btn"
-          :class="{ active: viewMode === mode.id }"
-          @click="viewMode = mode.id"
+          v-if="response.isBinary"
+          class="btn-download"
+          @click="downloadResponse"
+          title="下载"
         >
-          {{ mode.label }}
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
         </button>
       </div>
-      <button class="btn-copy" @click="copyResponse" title="复制">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-        </svg>
-      </button>
-      <button v-if="response.isBinary" class="btn-download" @click="downloadResponse" title="下载">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-      </button>
-    </div>
-    <div class="response-body">
-      <div v-if="response.isBinary" class="binary-preview">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-          <polyline points="10 9 9 9 8 9"/>
-        </svg>
-        <div class="binary-info">
-          <div class="binary-filename">{{ response.filename || '下载文件' }}</div>
-          <div class="binary-meta">{{ response.mimeType || 'application/octet-stream' }} · {{ formatSize(response.size) }}</div>
+      <div class="response-body">
+        <div v-if="response.isBinary" class="binary-preview">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+          <div class="binary-info">
+            <div class="binary-filename">
+              {{ response.filename || "下载文件" }}
+            </div>
+            <div class="binary-meta">
+              {{ response.mimeType || "application/octet-stream" }} ·
+              {{ formatSize(response.size) }}
+            </div>
+          </div>
         </div>
+        <pre
+          v-else-if="viewMode === 'pretty'"
+          class="code-block"
+        ><code v-html="highlightedBody"></code></pre>
+        <pre v-else class="code-block raw">{{ response.body }}</pre>
       </div>
-      <pre v-else-if="viewMode === 'pretty'" class="code-block"><code v-html="highlightedBody"></code></pre>
-      <pre v-else class="code-block raw">{{ response.body }}</pre>
     </div>
-  </div>
-    
+
     <div class="response-content" v-show="activeTab === 'headers'">
       <div class="headers-list">
-        <div v-for="[key, value] in response.headers" :key="key" class="header-item">
+        <div
+          v-for="[key, value] in response.headers"
+          :key="key"
+          class="header-item"
+        >
           <span class="header-key">{{ key }}</span>
           <span class="header-value">{{ value }}</span>
         </div>
@@ -93,87 +147,89 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import hljs from 'highlight.js/lib/core'
-import json from 'highlight.js/lib/languages/json'
-import xml from 'highlight.js/lib/languages/xml'
+import { ref, computed } from "vue";
+import hljs from "highlight.js/lib/core";
+import json from "highlight.js/lib/languages/json";
+import xml from "highlight.js/lib/languages/xml";
 
-hljs.registerLanguage('json', json)
-hljs.registerLanguage('xml', xml)
+hljs.registerLanguage("json", json);
+hljs.registerLanguage("xml", xml);
 
 const props = defineProps({
-  response: { type: Object, default: null }
-})
+  response: { type: Object, default: null },
+});
 
-const activeTab = ref('body')
-const viewMode = ref('pretty')
+const activeTab = ref("body");
+const viewMode = ref("pretty");
 
 const tabs = [
-  { id: 'body', label: 'Body' },
-  { id: 'headers', label: 'Headers' }
-]
+  { id: "body", label: "Body" },
+  { id: "headers", label: "Headers" },
+];
 
 const viewModes = [
-  { id: 'pretty', label: 'Pretty' },
-  { id: 'raw', label: 'Raw' }
-]
+  { id: "pretty", label: "Pretty" },
+  { id: "raw", label: "Raw" },
+];
 
 const statusClass = computed(() => {
-  const status = props.response?.status || 0
-  if (status >= 200 && status < 300) return 'status-success'
-  if (status >= 300 && status < 400) return 'status-redirect'
-  if (status >= 400 && status < 500) return 'status-client-error'
-  if (status >= 500) return 'status-server-error'
-  return 'status-error'
-})
+  const status = props.response?.status || 0;
+  if (status >= 200 && status < 300) return "status-success";
+  if (status >= 300 && status < 400) return "status-redirect";
+  if (status >= 400 && status < 500) return "status-client-error";
+  if (status >= 500) return "status-server-error";
+  return "status-error";
+});
 
 const highlightedBody = computed(() => {
-  if (!props.response?.body) return ''
-  
+  if (!props.response?.body) return "";
+
   try {
-    const body = props.response.body
-    if (body.trim().startsWith('{') || body.trim().startsWith('[')) {
-      return hljs.highlight(body, { language: 'json' }).value
+    const body = props.response.body;
+    if (body.trim().startsWith("{") || body.trim().startsWith("[")) {
+      return hljs.highlight(body, { language: "json" }).value;
     }
-    if (body.trim().startsWith('<')) {
-      return hljs.highlight(body, { language: 'xml' }).value
+    if (body.trim().startsWith("<")) {
+      return hljs.highlight(body, { language: "xml" }).value;
     }
-    return hljs.highlightAuto(body).value
+    return hljs.highlightAuto(body).value;
   } catch {
-    return props.response.body
+    return props.response.body;
   }
-})
+});
 
 function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B'
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 function copyResponse() {
-  navigator.clipboard.writeText(props.response?.body || '')
+  navigator.clipboard.writeText(props.response?.body || "");
 }
 
 function downloadResponse() {
-  if (!props.response?.body) return
-  
-  const byteCharacters = atob(props.response.body)
-  const byteNumbers = new Array(byteCharacters.length)
+  if (!props.response?.body) return;
+
+  const byteCharacters = atob(props.response.body);
+  const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i)
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
   }
-  const byteArray = new Uint8Array(byteNumbers)
-  
-  const blob = new Blob([byteArray], { type: props.response.mimeType || 'application/octet-stream' })
-  const url = URL.createObjectURL(blob)
-  
-  const a = document.createElement('a')
-  a.href = url
-  a.download = props.response.filename || 'download'
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  const byteArray = new Uint8Array(byteNumbers);
+
+  const blob = new Blob([byteArray], {
+    type: props.response.mimeType || "application/octet-stream",
+  });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = props.response.filename || "download";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 </script>
 
@@ -201,7 +257,7 @@ function downloadResponse() {
   gap: 8px;
   padding: 4px 12px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-weight: 600;
 }
 
@@ -214,11 +270,26 @@ function downloadResponse() {
   opacity: 0.8;
 }
 
-.status-success { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-.status-redirect { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-.status-client-error { background: rgba(249, 115, 22, 0.15); color: #f97316; }
-.status-server-error { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-.status-error { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.status-success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.status-redirect {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+.status-client-error {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+.status-server-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+.status-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
 
 .response-meta {
   display: flex;
@@ -240,7 +311,7 @@ function downloadResponse() {
 }
 
 .tab-btn {
-   height: 30px;
+  height: 30px;
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -328,7 +399,7 @@ function downloadResponse() {
 .code-block {
   margin: 0;
   padding: 0;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-size: 12px;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -361,14 +432,14 @@ function downloadResponse() {
 }
 
 .header-key {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-size: 12px;
   font-weight: 600;
   color: var(--color-text);
 }
 
 .header-value {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-size: 12px;
   color: var(--color-text-secondary);
   word-break: break-all;

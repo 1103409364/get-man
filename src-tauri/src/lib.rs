@@ -1,7 +1,7 @@
+use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Instant;
-use base64::{Engine as _, engine::general_purpose};
 
 fn is_binary_content_type(content_type: &Option<String>) -> bool {
     match content_type {
@@ -105,16 +105,20 @@ async fn send_http_request(request: HttpRequest) -> Result<HttpResponse, String>
         }
     }
 
-if let Some(ref body) = request.body {
+    if let Some(ref body) = request.body {
         if !body.is_empty() {
             let body_type = request.body_type.as_deref().unwrap_or("raw");
 
             match body_type {
                 "json" => {
-                    req = req.header("Content-Type", "application/json").body(body.clone());
+                    req = req
+                        .header("Content-Type", "application/json")
+                        .body(body.clone());
                 }
                 "x-www-form-urlencoded" => {
-                    req = req.header("Content-Type", "application/x-www-form-urlencoded").body(body.clone());
+                    req = req
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .body(body.clone());
                 }
                 "form-data" => {
                     let mut form = reqwest::multipart::Form::new();
@@ -147,7 +151,9 @@ if let Some(ref body) = request.body {
             }
 
             for file_info in files {
-                let bytes = general_purpose::STANDARD.decode(&file_info.data).map_err(|e| e.to_string())?;
+                let bytes = general_purpose::STANDARD
+                    .decode(&file_info.data)
+                    .map_err(|e| e.to_string())?;
                 let part = reqwest::multipart::Part::bytes(bytes)
                     .file_name(file_info.name)
                     .mime_str(&file_info.mime_type)
@@ -162,7 +168,11 @@ if let Some(ref body) = request.body {
     let response = req.send().await.map_err(|e| e.to_string())?;
 
     let status = response.status().as_u16();
-    let status_text = response.status().canonical_reason().unwrap_or("").to_string();
+    let status_text = response
+        .status()
+        .canonical_reason()
+        .unwrap_or("")
+        .to_string();
 
     let headers: Vec<(String, String)> = response
         .headers()
@@ -181,17 +191,16 @@ if let Some(ref body) = request.body {
         .map(|(_, v)| v.clone());
 
     let filename = content_disposition.and_then(|cd| {
-        cd.split(';')
-            .find_map(|part| {
-                let part = part.trim();
-                if part.starts_with("filename=") {
-                    Some(part[9..].trim_matches('"').to_string())
-                } else if part.starts_with("filename*=") {
-                    Some(part[10..].trim_matches('"').to_string())
-                } else {
-                    None
-                }
-            })
+        cd.split(';').find_map(|part| {
+            let part = part.trim();
+            if part.starts_with("filename=") {
+                Some(part[9..].trim_matches('"').to_string())
+            } else if part.starts_with("filename*=") {
+                Some(part[10..].trim_matches('"').to_string())
+            } else {
+                None
+            }
+        })
     });
 
     let body_bytes = response.bytes().await.map_err(|e| e.to_string())?;

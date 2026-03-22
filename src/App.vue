@@ -1,21 +1,21 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
-import { state, initStore } from './stores/store.js'
-import AppHeader from './components/AppHeader.vue'
-import Sidebar from './components/Sidebar.vue'
-import RequestEditor from './components/RequestEditor.vue'
-import ResponseViewer from './components/ResponseViewer.vue'
-import EnvironmentPanel from './components/EnvironmentPanel.vue'
+import { onMounted, ref, computed } from "vue";
+import { state, initStore } from "./stores/store.js";
+import AppHeader from "./components/AppHeader.vue";
+import Sidebar from "./components/Sidebar.vue";
+import RequestEditor from "./components/RequestEditor.vue";
+import ResponseViewer from "./components/ResponseViewer.vue";
+import EnvironmentPanel from "./components/EnvironmentPanel.vue";
 
-const showEnvPanel = ref(false)
+const showEnvPanel = ref(false);
 
-const response = computed(() => state.response)
-const error = computed(() => state.error)
-const loading = computed(() => state.loading)
+const response = computed(() => state.response);
+const error = computed(() => state.error);
+const loading = computed(() => state.loading);
 
 onMounted(async () => {
-  await initStore()
-})
+  await initStore();
+});
 </script>
 
 <template>
@@ -34,38 +34,61 @@ onMounted(async () => {
               <p>发送请求中...</p>
             </div>
             <div v-else-if="error" class="error-state">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="15" y1="9" x2="9" y2="15"/>
-                <line x1="9" y1="9" x2="15" y2="15"/>
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
               </svg>
               <p>{{ error }}</p>
             </div>
             <ResponseViewer v-else-if="response" :response="response" />
             <div v-else class="empty-state">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>
               <p>发送请求查看响应</p>
               <p class="hint">输入 URL 并点击发送按钮</p>
             </div>
           </div>
         </div>
-      <div class="floating-buttons">
-        <button
-          class="btn-float"
-          :class="{ active: showEnvPanel }"
-          @click="showEnvPanel = !showEnvPanel"
-          title="环境变量"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-          环境变量
-        </button>
-      </div>
+        <div class="floating-buttons">
+          <button
+            class="btn-float"
+            :class="{ active: showEnvPanel }"
+            @click="showEnvPanel = !showEnvPanel"
+            title="环境变量"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
+            </svg>
+            环境变量
+          </button>
+        </div>
         <transition name="slide">
           <div v-if="showEnvPanel" class="panel-container">
             <EnvironmentPanel />
@@ -176,7 +199,9 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error-state svg {

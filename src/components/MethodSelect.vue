@@ -1,41 +1,46 @@
 <template>
   <div class="method-select" :class="{ focused: isFocused }">
-    <select 
-      :value="modelValue" 
+    <select
+      :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       @focus="isFocused = true"
       @blur="isFocused = false"
       :class="methodClass"
     >
-      <option v-for="method in methods" :key="method" :value="method">{{ method }}</option>
+      <option v-for="method in methods" :key="method" :value="method">
+        {{ method }}
+      </option>
     </select>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 
 const props = defineProps({
-  modelValue: { type: String, default: 'GET' },
-  methods: { type: Array, default: () => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'] }
-})
+  modelValue: { type: String, default: "GET" },
+  methods: {
+    type: Array,
+    default: () => ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+  },
+});
 
-defineEmits(['update:modelValue'])
+defineEmits(["update:modelValue"]);
 
-const isFocused = ref(false)
+const isFocused = ref(false);
 
 const methodClass = computed(() => {
-  const method = props.modelValue.toLowerCase()
+  const method = props.modelValue.toLowerCase();
   return {
-    'method-get': method === 'get',
-    'method-post': method === 'post',
-    'method-put': method === 'put',
-    'method-patch': method === 'patch',
-    'method-delete': method === 'delete',
-    'method-head': method === 'head',
-    'method-options': method === 'options'
-  }
-})
+    "method-get": method === "get",
+    "method-post": method === "post",
+    "method-put": method === "put",
+    "method-patch": method === "patch",
+    "method-delete": method === "delete",
+    "method-head": method === "head",
+    "method-options": method === "options",
+  };
+});
 </script>
 
 <style scoped>
@@ -52,7 +57,7 @@ const methodClass = computed(() => {
   padding: 0 32px 0 12px;
   font-size: 13px;
   font-weight: 600;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   cursor: pointer;
   color: inherit;
   transition: all 0.2s ease;
@@ -67,11 +72,25 @@ const methodClass = computed(() => {
   box-shadow: 0 0 0 3px var(--color-primary-alpha);
 }
 
-.method-get { color: var(--color-method-get); }
-.method-post { color: var(--color-method-post); }
-.method-put { color: var(--color-method-put); }
-.method-patch { color: var(--color-method-patch); }
-.method-delete { color: var(--color-method-delete); }
-.method-head { color: var(--color-method-get); }
-.method-options { color: var(--color-method-get); }
+.method-get {
+  color: var(--color-method-get);
+}
+.method-post {
+  color: var(--color-method-post);
+}
+.method-put {
+  color: var(--color-method-put);
+}
+.method-patch {
+  color: var(--color-method-patch);
+}
+.method-delete {
+  color: var(--color-method-delete);
+}
+.method-head {
+  color: var(--color-method-get);
+}
+.method-options {
+  color: var(--color-method-get);
+}
 </style>

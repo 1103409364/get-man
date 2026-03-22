@@ -1,29 +1,58 @@
 <template>
   <div class="request-editor">
     <div class="editor-toolbar">
-      <input 
+      <input
         v-model="requestName"
         type="text"
         placeholder="请求名称（可选）"
         class="request-name-input"
       />
       <button class="btn-send" @click="sendRequest" :disabled="loading">
-        <svg v-if="loading" class="spinner" width="16" height="16" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="60" stroke-linecap="round">
-            <animate attributeName="stroke-dashoffset" from="0" to="60" dur="1s" repeatCount="indefinite"/>
+        <svg
+          v-if="loading"
+          class="spinner"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-dasharray="60"
+            stroke-linecap="round"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              from="0"
+              to="60"
+              dur="1s"
+              repeatCount="indefinite"
+            />
           </circle>
         </svg>
-        <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        <svg
+          v-else
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
         </svg>
         发送
       </button>
     </div>
-    
+
     <div class="url-bar">
       <MethodSelect v-model="currentRequest.method" />
-      <input 
+      <input
         v-model="currentRequest.url"
         type="text"
         placeholder="输入请求 URL（支持 {{variable}} 变量）"
@@ -31,9 +60,9 @@
         @keydown.enter="sendRequest"
       />
     </div>
-    
+
     <div class="editor-tabs">
-      <button 
+      <button
         v-for="tab in tabs"
         :key="tab.id"
         class="tab-btn"
@@ -41,153 +70,191 @@
         @click="activeTab = tab.id"
       >
         {{ tab.label }}
-        <span v-if="tab.id === 'headers' && headerCount" class="badge">{{ headerCount }}</span>
+        <span v-if="tab.id === 'headers' && headerCount" class="badge">{{
+          headerCount
+        }}</span>
       </button>
     </div>
-    
+
     <div class="editor-content">
       <div v-show="activeTab === 'headers'" class="tab-panel">
-        <KeyValueEditor 
+        <KeyValueEditor
           v-model="currentRequest.headers"
           placeholder-key="Header Name"
           placeholder-value="Header Value"
         />
       </div>
-      
-<div v-show="activeTab === 'body'" class="tab-panel">
-    <div class="body-type-selector">
-      <button
-        v-for="type in bodyTypes"
-        :key="type.id"
-        class="type-btn"
-        :class="{ active: currentRequest.bodyType === type.id }"
-        @click="currentRequest.bodyType = type.id"
-      >
-        {{ type.label }}
-      </button>
-    </div>
-    <div v-if="currentRequest.bodyType === 'binary'" class="binary-upload">
-      <div class="file-list">
-        <div v-for="(file, index) in currentRequest.files" :key="index" class="file-item">
-          <span class="file-name">{{ file.name }}</span>
-          <span class="file-size">{{ formatFileSize(file.size) }}</span>
-          <button class="btn-remove-file" @click="removeFile(index)" title="删除">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+
+      <div v-show="activeTab === 'body'" class="tab-panel">
+        <div class="body-type-selector">
+          <button
+            v-for="type in bodyTypes"
+            :key="type.id"
+            class="type-btn"
+            :class="{ active: currentRequest.bodyType === type.id }"
+            @click="currentRequest.bodyType = type.id"
+          >
+            {{ type.label }}
           </button>
         </div>
+        <div v-if="currentRequest.bodyType === 'binary'" class="binary-upload">
+          <div class="file-list">
+            <div
+              v-for="(file, index) in currentRequest.files"
+              :key="index"
+              class="file-item"
+            >
+              <span class="file-name">{{ file.name }}</span>
+              <span class="file-size">{{ formatFileSize(file.size) }}</span>
+              <button
+                class="btn-remove-file"
+                @click="removeFile(index)"
+                title="删除"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <label class="btn-upload">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            选择文件
+            <input
+              type="file"
+              @change="handleFileSelect"
+              style="display: none"
+            />
+          </label>
+        </div>
+        <textarea
+          v-else
+          v-model="currentRequest.body"
+          class="body-editor"
+          :placeholder="bodyPlaceholder"
+        ></textarea>
       </div>
-      <label class="btn-upload">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        选择文件
-        <input type="file" @change="handleFileSelect" style="display: none" />
-      </label>
-    </div>
-    <textarea
-      v-else
-      v-model="currentRequest.body"
-      class="body-editor"
-      :placeholder="bodyPlaceholder"
-    ></textarea>
-  </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { state } from '../stores/store.js'
-import { sendRequest as sendHttpRequest } from '../utils/http.js'
-import MethodSelect from './MethodSelect.vue'
-import KeyValueEditor from './KeyValueEditor.vue'
+import { ref, computed, watch, onMounted } from "vue";
+import { state } from "../stores/store.js";
+import { sendRequest as sendHttpRequest } from "../utils/http.js";
+import MethodSelect from "./MethodSelect.vue";
+import KeyValueEditor from "./KeyValueEditor.vue";
 
-const currentRequest = computed(() => state.currentRequest)
-const loading = computed(() => state.loading)
+const currentRequest = computed(() => state.currentRequest);
+const loading = computed(() => state.loading);
 
-const requestName = ref('')
-const activeTab = ref('headers')
+const requestName = ref("");
+const activeTab = ref("headers");
 
 const tabs = [
-  { id: 'headers', label: 'Headers' },
-  { id: 'body', label: 'Body' }
-]
+  { id: "headers", label: "Headers" },
+  { id: "body", label: "Body" },
+];
 
 const bodyTypes = [
-  { id: 'json', label: 'JSON' },
-  { id: 'form-data', label: 'Form Data' },
-  { id: 'x-www-form-urlencoded', label: 'x-www-form-urlencoded' },
-  { id: 'raw', label: 'Raw' },
-  { id: 'binary', label: 'Binary' }
-]
+  { id: "json", label: "JSON" },
+  { id: "form-data", label: "Form Data" },
+  { id: "x-www-form-urlencoded", label: "x-www-form-urlencoded" },
+  { id: "raw", label: "Raw" },
+  { id: "binary", label: "Binary" },
+];
 
 const headerCount = computed(() => {
-  return currentRequest.value.headers?.filter(h => h.key && h.enabled !== false).length || 0
-})
+  return (
+    currentRequest.value.headers?.filter((h) => h.key && h.enabled !== false)
+      .length || 0
+  );
+});
 
 const bodyPlaceholder = computed(() => {
-  const type = currentRequest.value.bodyType
-  if (type === 'json') return '{\n  "key": "value"\n}'
-  if (type === 'x-www-form-urlencoded') return 'key1=value1&key2=value2'
-  if (type === 'form-data') return '{\n  "key": "value"\n}'
-  return 'Raw text content'
-})
+  const type = currentRequest.value.bodyType;
+  if (type === "json") return '{\n  "key": "value"\n}';
+  if (type === "x-www-form-urlencoded") return "key1=value1&key2=value2";
+  if (type === "form-data") return '{\n  "key": "value"\n}';
+  return "Raw text content";
+});
 
-watch(() => currentRequest.value.name, (name) => {
-  requestName.value = name || ''
-}, { immediate: true })
+watch(
+  () => currentRequest.value.name,
+  (name) => {
+    requestName.value = name || "";
+  },
+  { immediate: true },
+);
 
 watch(requestName, (name) => {
-  currentRequest.value.name = name
-})
+  currentRequest.value.name = name;
+});
 
-watch(() => currentRequest.value.bodyType, (newType) => {
-  if (newType !== 'binary' && currentRequest.value.files) {
-    currentRequest.value.files = []
-  }
-})
+watch(
+  () => currentRequest.value.bodyType,
+  (newType) => {
+    if (newType !== "binary" && currentRequest.value.files) {
+      currentRequest.value.files = [];
+    }
+  },
+);
 
 function sendRequest() {
-  sendHttpRequest()
+  sendHttpRequest();
 }
 
 async function handleFileSelect(event) {
-  const fileInput = event.target
-  const file = fileInput.files[0]
-  if (!file) return
-  
-  const reader = new FileReader()
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
   reader.onload = (e) => {
-    const base64 = e.target.result.split(',')[1]
+    const base64 = e.target.result.split(",")[1];
     const fileInfo = {
-      key: 'file',
+      key: "file",
       name: file.name,
-      mime_type: file.type || 'application/octet-stream',
+      mime_type: file.type || "application/octet-stream",
       data: base64,
-      size: file.size
-    }
+      size: file.size,
+    };
     if (!currentRequest.value.files) {
-      currentRequest.value.files = []
+      currentRequest.value.files = [];
     }
-    currentRequest.value.files.push(fileInfo)
-  }
-  reader.readAsDataURL(file)
-  fileInput.value = ''
+    currentRequest.value.files.push(fileInfo);
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = "";
 }
 
 function removeFile(index) {
-  currentRequest.value.files.splice(index, 1)
+  currentRequest.value.files.splice(index, 1);
 }
 
 function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + ' B'
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 </script>
 
@@ -259,8 +326,12 @@ function formatFileSize(bytes) {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .url-bar {
@@ -281,7 +352,7 @@ function formatFileSize(bytes) {
   background: var(--color-surface-2);
   color: inherit;
   font-size: 13px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
 }
 
 .url-input:focus {
@@ -389,7 +460,7 @@ function formatFileSize(bytes) {
   border-radius: 6px;
   background: var(--color-surface-2);
   color: inherit;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   font-size: 13px;
   line-height: 1.6;
   resize: none;
@@ -433,7 +504,7 @@ function formatFileSize(bytes) {
 .file-name {
   flex: 1;
   font-size: 13px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  font-family: "JetBrains Mono", "SF Mono", Monaco, monospace;
   word-break: break-all;
 }
 
