@@ -73,11 +73,11 @@ html, body {
 }
 
 html {
-  border-radius: 12px;
+  /* border-radius: 12px; */
 }
 
 body {
-  border-radius: 12px;
+  /* border-radius: 12px; */
   overflow: hidden;
 }
 

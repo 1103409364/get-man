@@ -82,7 +82,7 @@ onMounted(async () => {
   flex-direction: column;
   height: 100vh;
   background: var(--color-bg);
-  border-radius: 12px;
+  /* border-radius: 12px; */
   overflow: hidden;
 }
 
