@@ -134,7 +134,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { state, createCollection, deleteCollection, saveRequest, deleteHistoryEntry, clearHistory as clearHistoryStore, loadRequestToEditor } from '../stores/store.js'
+import { state, createCollection, deleteCollection, updateCollection, saveRequest, deleteHistoryEntry, clearHistory as clearHistoryStore, loadRequestToEditor } from '../stores/store.js'
 import CollectionItem from './CollectionItem.vue'
 
 const emit = defineEmits(['load-request'])
@@ -165,7 +165,7 @@ async function deleteCollectionItem(id) {
 function editCollection(collection) {
   const newName = prompt('集合名称', collection.name)
   if (newName && newName !== collection.name) {
-    import('../stores/store.js').then(m => m.updateCollection(collection.id, { name: newName }))
+    updateCollection(collection.id, { name: newName })
   }
 }
 
