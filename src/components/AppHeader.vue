@@ -186,13 +186,7 @@ async function closeWindow() {
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
-  );
-  border-radius: 8px;
-  color: white;
+  color: var(--color-primary);
 }
 
 .app-title {
