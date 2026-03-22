@@ -44,11 +44,12 @@ const methodClass = computed(() => {
 }
 
 .method-select select {
+  height: 30px;
   appearance: none;
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 8px 32px 8px 12px;
+  padding: 0 32px 0 12px;
   font-size: 13px;
   font-weight: 600;
   font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;

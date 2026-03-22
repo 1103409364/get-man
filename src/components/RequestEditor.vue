@@ -264,15 +264,18 @@ function formatFileSize(bytes) {
 }
 
 .url-bar {
+  height: 46px;
   display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .url-input {
+  height: 30px;
   flex: 1;
-  padding: 8px 14px;
+  padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-surface-2);
@@ -292,9 +295,11 @@ function formatFileSize(bytes) {
 }
 
 .editor-tabs {
+  height: 46px;
   display: flex;
+  align-items: center;
   gap: 4px;
-  padding: 8px 12px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface-2);
 }
