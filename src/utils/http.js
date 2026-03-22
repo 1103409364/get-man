@@ -1,6 +1,20 @@
 import axios from 'axios'
 import { state, addHistoryEntry, substituteVariables } from '../stores/store.js'
 
+function getProxiedUrl(url) {
+  if (!state.proxyEnabled || !state.proxyUrl) {
+    return url
+  }
+  
+  try {
+    const targetUrl = new URL(url)
+    const proxyBase = state.proxyUrl.replace(/\/$/, '')
+    return `${proxyBase}/${targetUrl.toString()}`
+  } catch {
+    return url
+  }
+}
+
 function substituteHeadersVariables(headers) {
   return headers.map(h => ({
     ...h,
@@ -43,20 +57,21 @@ async function sendRequest() {
     state.error = '请输入 URL'
     return
   }
-  
+
   state.loading = true
   state.error = null
   state.response = null
-  
+
   const startTime = performance.now()
-  
+
   try {
-    const url = substituteVariables(state.currentRequest.url)
+    const originalUrl = substituteVariables(state.currentRequest.url)
+    const url = getProxiedUrl(originalUrl)
     const method = state.currentRequest.method.toLowerCase()
     const headers = substituteHeadersVariables(state.currentRequest.headers || [])
     const bodyType = state.currentRequest.bodyType
     const body = substituteBodyVariables(state.currentRequest.body, bodyType)
-    
+
     const config = {
       method,
       url,

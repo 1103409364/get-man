@@ -6,8 +6,10 @@ import Sidebar from './components/Sidebar.vue'
 import RequestEditor from './components/RequestEditor.vue'
 import ResponseViewer from './components/ResponseViewer.vue'
 import EnvironmentPanel from './components/EnvironmentPanel.vue'
+import ProxyPanel from './components/ProxyPanel.vue'
 
 const showEnvPanel = ref(false)
+const showProxyPanel = ref(false)
 
 const response = computed(() => state.response)
 const error = computed(() => state.error)
@@ -52,11 +54,24 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div class="env-toggle">
-          <button 
-            class="btn-env-toggle"
+        <div class="floating-buttons">
+          <button
+            class="btn-float"
+            :class="{ active: showProxyPanel }"
+            @click="showProxyPanel = !showProxyPanel; showEnvPanel = false"
+            :title="state.proxyEnabled ? '代理已启用' : '代理设置'"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span v-if="state.proxyEnabled" class="indicator"></span>
+            代理设置
+          </button>
+          <button
+            class="btn-float"
             :class="{ active: showEnvPanel }"
-            @click="showEnvPanel = !showEnvPanel"
+            @click="showEnvPanel = !showEnvPanel; showProxyPanel = false"
+            title="环境变量"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"/>
@@ -66,7 +81,12 @@ onMounted(async () => {
           </button>
         </div>
         <transition name="slide">
-          <div v-if="showEnvPanel" class="env-panel-container">
+          <div v-if="showProxyPanel" class="panel-container">
+            <ProxyPanel />
+          </div>
+        </transition>
+        <transition name="slide">
+          <div v-if="showEnvPanel" class="panel-container">
             <EnvironmentPanel />
           </div>
         </transition>
@@ -187,14 +207,18 @@ onMounted(async () => {
   font-weight: 500;
 }
 
-.env-toggle {
+.floating-buttons {
   position: absolute;
   bottom: 20px;
   right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   z-index: 100;
 }
 
-.btn-env-toggle {
+.btn-float {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -210,29 +234,39 @@ onMounted(async () => {
   transition: all 0.2s ease;
 }
 
-.btn-env-toggle:hover {
+.btn-float:hover {
   background: var(--color-surface-3);
   color: var(--color-text);
 }
 
-.btn-env-toggle.active {
+.btn-float.active {
   background: var(--color-primary);
   color: white;
 }
 
-.env-panel-container {
+.btn-float .indicator {
   position: absolute;
-  bottom: 70px;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+.panel-container {
+  position: absolute;
+  bottom: 130px;
   right: 20px;
-  width: 360px;
-  max-height: 400px;
+  width: 380px;
+  max-height: 450px;
   overflow: auto;
   z-index: 100;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
-  .env-panel-container {
+  .panel-container {
     width: calc(100% - 40px);
     left: 20px;
     right: 20px;
