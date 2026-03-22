@@ -132,13 +132,15 @@ function sendRequest() {
   flex-direction: column;
   height: 100%;
   background: var(--color-surface-1);
+  border-right: 1px solid var(--color-border);
 }
 
 .editor-toolbar {
+  height: 54px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -149,7 +151,7 @@ function sendRequest() {
   border-radius: 6px;
   background: var(--color-surface-2);
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .request-name-input:focus {
@@ -203,12 +205,12 @@ function sendRequest() {
 
 .url-input {
   flex: 1;
-  padding: 10px 14px;
+  padding: 8px 14px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-surface-2);
   color: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
 }
 
@@ -231,6 +233,7 @@ function sendRequest() {
 }
 
 .tab-btn {
+  height: 30px;
   display: flex;
   align-items: center;
   gap: 6px;

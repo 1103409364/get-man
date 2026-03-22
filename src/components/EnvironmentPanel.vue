@@ -130,13 +130,17 @@ async function deleteCurrentEnv() {
   background: var(--color-surface-1);
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
 }
 
 .env-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -152,7 +156,6 @@ async function deleteCurrentEnv() {
 }
 
 .env-select {
-  padding: 6px 10px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-surface-2);
@@ -170,8 +173,8 @@ async function deleteCurrentEnv() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: none;
   border-radius: 6px;
   background: var(--color-primary);
@@ -186,6 +189,9 @@ async function deleteCurrentEnv() {
 
 .env-content {
   padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .env-name-edit {

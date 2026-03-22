@@ -104,9 +104,7 @@ onMounted(async () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  background: var(--color-border);
-  padding: 1px;
+
   overflow: hidden;
 }
 
@@ -239,13 +237,12 @@ onMounted(async () => {
 
 .panel-container {
   position: absolute;
-  bottom: 130px;
+  bottom: 70px;
   right: 20px;
-  width: 380px;
-  max-height: 450px;
-  overflow: auto;
+  /* width: 400px; */
+  max-height: calc(100vh - 140px);
+  overflow: visible;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {

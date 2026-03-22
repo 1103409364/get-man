@@ -246,9 +246,10 @@ function getStatusClass(status) {
 }
 
 .sidebar-header {
+  height: 54px;
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 0 12px;
   gap: 8px;
   border-bottom: 1px solid var(--color-border);
 }
@@ -260,6 +261,7 @@ function getStatusClass(status) {
 }
 
 .tab-btn {
+  height: 30px;
   display: flex;
   align-items: center;
   gap: 6px;
