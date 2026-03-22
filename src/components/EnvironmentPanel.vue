@@ -156,6 +156,8 @@ async function deleteCurrentEnv() {
 }
 
 .env-select {
+  appearance: none; /* 移除默认样式，否则 background 不生效 */
+  padding: 0 12px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-surface-2);
