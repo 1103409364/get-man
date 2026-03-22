@@ -35,31 +35,51 @@
       </div>
     </div>
     
-    <div class="response-content" v-show="activeTab === 'body'">
-      <div class="response-toolbar">
-        <div class="view-modes">
-          <button 
-            v-for="mode in viewModes" 
-            :key="mode.id"
-            class="mode-btn"
-            :class="{ active: viewMode === mode.id }"
-            @click="viewMode = mode.id"
-          >
-            {{ mode.label }}
-          </button>
-        </div>
-        <button class="btn-copy" @click="copyResponse" title="复制">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-          </svg>
+<div class="response-content" v-show="activeTab === 'body'">
+    <div class="response-toolbar">
+      <div class="view-modes">
+        <button
+          v-for="mode in viewModes"
+          :key="mode.id"
+          class="mode-btn"
+          :class="{ active: viewMode === mode.id }"
+          @click="viewMode = mode.id"
+        >
+          {{ mode.label }}
         </button>
       </div>
-      <div class="response-body">
-        <pre v-if="viewMode === 'pretty'" class="code-block"><code v-html="highlightedBody"></code></pre>
-        <pre v-else class="code-block raw">{{ response.body }}</pre>
-      </div>
+      <button class="btn-copy" @click="copyResponse" title="复制">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+      </button>
+      <button v-if="response.isBinary" class="btn-download" @click="downloadResponse" title="下载">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
     </div>
+    <div class="response-body">
+      <div v-if="response.isBinary" class="binary-preview">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <div class="binary-info">
+          <div class="binary-filename">{{ response.filename || '下载文件' }}</div>
+          <div class="binary-meta">{{ response.mimeType || 'application/octet-stream' }} · {{ formatSize(response.size) }}</div>
+        </div>
+      </div>
+      <pre v-else-if="viewMode === 'pretty'" class="code-block"><code v-html="highlightedBody"></code></pre>
+      <pre v-else class="code-block raw">{{ response.body }}</pre>
+    </div>
+  </div>
     
     <div class="response-content" v-show="activeTab === 'headers'">
       <div class="headers-list">
@@ -132,6 +152,28 @@ function formatSize(bytes) {
 
 function copyResponse() {
   navigator.clipboard.writeText(props.response?.body || '')
+}
+
+function downloadResponse() {
+  if (!props.response?.body) return
+  
+  const byteCharacters = atob(props.response.body)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+  
+  const blob = new Blob([byteArray], { type: props.response.mimeType || 'application/octet-stream' })
+  const url = URL.createObjectURL(blob)
+  
+  const a = document.createElement('a')
+  a.href = url
+  a.download = props.response.filename || 'download'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
 </script>
 
@@ -330,5 +372,46 @@ function copyResponse() {
   font-size: 12px;
   color: var(--color-text-secondary);
   word-break: break-all;
+}
+
+.btn-download {
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-download:hover {
+  background: var(--color-surface-3);
+  color: var(--color-text);
+}
+
+.binary-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  color: var(--color-text-secondary);
+}
+
+.binary-info {
+  text-align: center;
+}
+
+.binary-filename {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.binary-meta {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
 }
 </style>

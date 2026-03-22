@@ -54,24 +54,48 @@
         />
       </div>
       
-      <div v-show="activeTab === 'body'" class="tab-panel">
-        <div class="body-type-selector">
-          <button 
-            v-for="type in bodyTypes"
-            :key="type.id"
-            class="type-btn"
-            :class="{ active: currentRequest.bodyType === type.id }"
-            @click="currentRequest.bodyType = type.id"
-          >
-            {{ type.label }}
+<div v-show="activeTab === 'body'" class="tab-panel">
+    <div class="body-type-selector">
+      <button
+        v-for="type in bodyTypes"
+        :key="type.id"
+        class="type-btn"
+        :class="{ active: currentRequest.bodyType === type.id }"
+        @click="currentRequest.bodyType = type.id"
+      >
+        {{ type.label }}
+      </button>
+    </div>
+    <div v-if="currentRequest.bodyType === 'binary'" class="binary-upload">
+      <div class="file-list">
+        <div v-for="(file, index) in currentRequest.files" :key="index" class="file-item">
+          <span class="file-name">{{ file.name }}</span>
+          <span class="file-size">{{ formatFileSize(file.size) }}</span>
+          <button class="btn-remove-file" @click="removeFile(index)" title="删除">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
           </button>
         </div>
-        <textarea 
-          v-model="currentRequest.body"
-          class="body-editor"
-          :placeholder="bodyPlaceholder"
-        ></textarea>
       </div>
+      <label class="btn-upload">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        选择文件
+        <input type="file" @change="handleFileSelect" style="display: none" />
+      </label>
+    </div>
+    <textarea
+      v-else
+      v-model="currentRequest.body"
+      class="body-editor"
+      :placeholder="bodyPlaceholder"
+    ></textarea>
+  </div>
     </div>
   </div>
 </template>
@@ -98,7 +122,8 @@ const bodyTypes = [
   { id: 'json', label: 'JSON' },
   { id: 'form-data', label: 'Form Data' },
   { id: 'x-www-form-urlencoded', label: 'x-www-form-urlencoded' },
-  { id: 'raw', label: 'Raw' }
+  { id: 'raw', label: 'Raw' },
+  { id: 'binary', label: 'Binary' }
 ]
 
 const headerCount = computed(() => {
@@ -121,8 +146,48 @@ watch(requestName, (name) => {
   currentRequest.value.name = name
 })
 
+watch(() => currentRequest.value.bodyType, (newType) => {
+  if (newType !== 'binary' && currentRequest.value.files) {
+    currentRequest.value.files = []
+  }
+})
+
 function sendRequest() {
   sendHttpRequest()
+}
+
+async function handleFileSelect(event) {
+  const fileInput = event.target
+  const file = fileInput.files[0]
+  if (!file) return
+  
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const base64 = e.target.result.split(',')[1]
+    const fileInfo = {
+      key: 'file',
+      name: file.name,
+      mime_type: file.type || 'application/octet-stream',
+      data: base64,
+      size: file.size
+    }
+    if (!currentRequest.value.files) {
+      currentRequest.value.files = []
+    }
+    currentRequest.value.files.push(fileInfo)
+  }
+  reader.readAsDataURL(file)
+  fileInput.value = ''
+}
+
+function removeFile(index) {
+  currentRequest.value.files.splice(index, 1)
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
 }
 </script>
 
@@ -333,5 +398,76 @@ function sendRequest() {
 
 .body-editor::placeholder {
   color: var(--color-text-tertiary);
+}
+
+.binary-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: calc(100% - 50px);
+}
+
+.file-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.file-name {
+  flex: 1;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  word-break: break-all;
+}
+
+.file-size {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.btn-remove-file {
+  padding: 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-remove-file:hover {
+  background: var(--color-surface-3);
+  color: var(--color-error);
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-upload:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 </style>

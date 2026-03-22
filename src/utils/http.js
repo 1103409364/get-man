@@ -57,28 +57,32 @@ async function sendRequest() {
     const bodyType = state.currentRequest.bodyType
     const body = substituteBodyVariables(state.currentRequest.body, bodyType)
 
-    const request = {
-      url,
-      method,
-      headers: headers.filter(h => h.key && h.enabled !== false).map(h => ({
-        key: h.key,
-        value: h.value,
-        enabled: h.enabled !== false
-      })),
-      body: body || null,
-      body_type: bodyType || null
-    }
+const request = {
+    url,
+    method,
+    headers: headers.filter(h => h.key && h.enabled !== false).map(h => ({
+      key: h.key,
+      value: h.value,
+      enabled: h.enabled !== false
+    })),
+    body: body || null,
+    body_type: bodyType || null,
+    files: state.currentRequest.files || null
+  }
 
     const response = await invoke('send_http_request', { request })
 
-    state.response = {
-      status: response.status,
-      statusText: response.status_text,
-      headers: response.headers,
-      body: response.body,
-      time: response.time,
-      size: response.size
-    }
+state.response = {
+    status: response.status,
+    statusText: response.status_text,
+    headers: response.headers,
+    body: response.body,
+    time: response.time,
+    size: response.size,
+    isBinary: response.is_binary,
+    mimeType: response.mime_type,
+    filename: response.filename
+  }
 
     await addHistoryEntry({
       method: state.currentRequest.method,

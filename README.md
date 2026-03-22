@@ -8,9 +8,11 @@
 
 - 支持 HTTP 方法：GET、POST、PUT、PATCH、DELETE、HEAD、OPTIONS
 - 自定义请求头（键值对编辑器）
-- 支持请求体类型：JSON、Form Data、x-www-form-urlencoded、Raw Text
+- 支持请求体类型：JSON、Form Data、x-www-form-urlencoded、Raw Text、Binary
+- 文件上传支持（Binary 模式）
 - 响应状态码、响应时间、响应大小显示
 - JSON/XML 语法高亮显示
+- 二进制响应预览和下载
 
 ### 请求历史记录
 
@@ -131,6 +133,22 @@ src-tauri/          # Tauri 后端
 - **requests**: 保存的请求
 - **history**: 请求历史（最多 100 条）
 - **environments**: 环境变量配置
+
+## 文件上传下载
+
+### 文件上传
+
+1. 在请求编辑器中选择 Body 标签
+2. 选择 "Binary" 类型
+3. 点击"选择文件"按钮上传文件
+4. 发送请求即可上传文件
+
+### 文件下载
+
+当响应为二进制文件时（如图片、PDF、压缩包等）：
+
+- 自动显示文件预览信息
+- 点击下载按钮保存文件到本地
 
 ## 许可证
 

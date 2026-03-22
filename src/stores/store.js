@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import db from './db.js'
 
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']
-const BODY_TYPES = ['json', 'form-data', 'x-www-form-urlencoded', 'raw']
+const BODY_TYPES = ['json', 'form-data', 'x-www-form-urlencoded', 'raw', 'binary']
 const MAX_HISTORY = 100
 
 const state = reactive({
@@ -14,7 +14,8 @@ const state = reactive({
     url: '',
     headers: [],
     body: '',
-    bodyType: 'json'
+    bodyType: 'json',
+    files: []
   },
   response: null,
   loading: false,
@@ -45,7 +46,8 @@ function createDefaultRequest() {
     url: '',
     headers: [],
     body: '',
-    bodyType: 'json'
+    bodyType: 'json',
+    files: []
   }
 }
 
@@ -179,7 +181,8 @@ async function deleteRequest(id) {
 async function loadRequestToEditor(request) {
   state.currentRequest = {
     ...request,
-    headers: typeof request.headers === 'string' ? JSON.parse(request.headers) : request.headers
+    headers: typeof request.headers === 'string' ? JSON.parse(request.headers) : request.headers,
+    files: request.files || []
   }
 }
 
