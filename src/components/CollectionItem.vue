@@ -1,5 +1,5 @@
 <template>
-  <div class="collection-item" :style="{ paddingLeft: depth * 16 + 12 + 'px' }">
+  <div class="collection-item" :style="{ paddingLeft: depth * 16 + 'px' }">
     <div class="collection-header" :class="{ expanded: isExpanded }">
       <button class="btn-expand" @click="isExpanded = !isExpanded">
         <svg
