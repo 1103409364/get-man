@@ -1,6 +1,6 @@
 <template>
-  <header class="app-header" data-tauri-drag-region>
-    <div class="header-brand" data-tauri-drag-region>
+  <header class="app-header">
+    <div class="header-brand">
       <div class="logo">
         <svg
           width="28"
@@ -78,45 +78,7 @@
         {{ activeEnvironment.name }}
       </div>
 
-      <div class="window-controls">
-        <button
-          class="btn-control btn-minimize"
-          @click="minimizeWindow"
-          title="最小化"
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect x="2" y="5.5" width="8" height="1" fill="currentColor" />
-          </svg>
-        </button>
-        <button
-          class="btn-control btn-maximize"
-          @click="toggleMaximize"
-          title="最大化"
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <rect
-              x="2"
-              y="2"
-              width="8"
-              height="8"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.2"
-              rx="1"
-            />
-          </svg>
-        </button>
-        <button class="btn-control btn-close" @click="closeWindow" title="关闭">
-          <svg width="12" height="12" viewBox="0 0 12 12">
-            <path
-              d="M2.5 2.5L9.5 9.5M9.5 2.5L2.5 9.5"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-      </div>
+
     </div>
   </header>
 </template>
@@ -124,9 +86,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { state, initThemeListener } from "../stores/store.js";
-import { getCurrentWindow } from "@tauri-apps/api/window";
 
-const appWindow = getCurrentWindow();
 const theme = computed(() => state.theme);
 const systemTheme = computed(() => state.systemTheme);
 const activeEnvironment = computed(() => state.activeEnvironment);
@@ -154,30 +114,6 @@ function cycleTheme() {
   const order = ["system", "dark", "light"];
   const currentIndex = order.indexOf(state.theme);
   state.theme = order[(currentIndex + 1) % order.length];
-}
-
-async function minimizeWindow() {
-  try {
-    await appWindow.minimize();
-  } catch (e) {
-    console.error("minimize error:", e);
-  }
-}
-
-async function toggleMaximize() {
-  try {
-    await appWindow.toggleMaximize();
-  } catch (e) {
-    console.error("toggleMaximize error:", e);
-  }
-}
-
-async function closeWindow() {
-  try {
-    await appWindow.close();
-  } catch (e) {
-    console.error("close error:", e);
-  }
 }
 
 onMounted(() => {
@@ -234,6 +170,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-left: auto;
 }
 
 .btn-theme {
@@ -283,39 +220,5 @@ onUnmounted(() => {
   color: var(--color-primary);
 }
 
-.window-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: 8px;
-}
 
-.btn-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 6px;
-  background: var(--color-surface-3);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn-control:hover {
-  background: var(--color-surface-1);
-  color: var(--color-text);
-}
-
-.btn-close:hover {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-maximize:hover {
-  background: var(--color-primary-alpha);
-  color: var(--color-primary);
-}
 </style>
